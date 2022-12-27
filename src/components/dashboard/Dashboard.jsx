@@ -101,7 +101,7 @@ const dashboard = () => {
           </div>
         </div>
         <div className="col-span-4 bg-white h-[400px] m-2 mb-4">
-          <h2 className="text-center text-xl mt-3 text-slate-600">Sales Information</h2>
+          <h2 className="text-center text-xl mt-3 text-slate-600">របាយការណ៍នៃការលក់</h2>
         </div>
       </div>
     </div>

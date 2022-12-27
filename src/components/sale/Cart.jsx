@@ -12,7 +12,7 @@ const Cart = (props) => {
 
   return (
     <>
-      <div className="col-span-4 overflow-auto scrollbar h-[300px]">
+      <div className="col-span-4 overflow-auto scrollbar h-[370px]">
         <div>
           {cartItems.length === 0 && (
             <div className="text-center mt-4 text-slate-500 font-semibold">

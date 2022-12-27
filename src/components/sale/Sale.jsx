@@ -47,11 +47,11 @@ const Sale = () => {
       <div className="flex">
         <Sidebar />
         <div className="flex-1">
-          <div className="grid grid-cols-5 gap-4 ml-4 mr-4 w-auto h-screen">
+          <div className="grid grid-cols-5 gap-4 ml-4 mr-4 h-screen">
             <div className="col-span-2 bg-slate-300 mr-6">
               <div className="grid grid-cols-4 gap-4">
-                <div className="col-span-4 h-24">
-                  <div className="flex justify-between items-center border pt-1 pb-1 h-24">
+                <div className="col-span-4 h-18">
+                  <div className="flex justify-between items-center border pt-1 pb-1 h-16">
                     <span className="ml-3 text-sm text-slate-400">
                       សួរស្ដី
                     </span>
@@ -62,7 +62,7 @@ const Sale = () => {
                 </div>
                 <div className="col-span-4">
                   <div className="grid grid-cols-4 gap-4">
-                    <div className="col-span-4 flex justify-between bg-[#92A9BD] p-2 items-center text-slate-300">
+                    <div className="col-span-4 flex justify-between bg-[#6B728E] p-2 items-center text-slate-300">
                       <span className="ml-6">Product</span>
                       <span>Qty</span>
                       <span>Price</span>
@@ -80,7 +80,7 @@ const Sale = () => {
               </div>
             </div>
             <div className="col-span-3 bg-slate-300 -ml-6 overflow-auto scrollbar">
-              <div className="bg-[#92A9BD] h-16 flex justify-between items-center">
+              <div className="bg-[#6B728E] h-16 flex justify-between items-center">
                 <div className="text-slate-200 ml-6 flex flex-row items-center border-gray-200 border p-[2px] cursor-pointer">
                   <span className="mr-2">Search</span>
                   <AiOutlineSearch size={18} />
