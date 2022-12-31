@@ -4,32 +4,25 @@ import Sidebar from "../sidebar/Sidebar";
 import { useState, useEffect } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import { HiOutlinePencilAlt } from "react-icons/hi";
-
+import ModelUpdate from "../models/ModalUpdate";
+import ModelCreate from "../models/ModelCreate";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const Category = () => {
-  const [showModal, setShowModal] = React.useState(false);
-  const [showModalUpdate, setShowModalUpdate] = React.useState(false);
-  const [image, setImage] = useState(null);
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState({
-    categoryName: "",
-    desc: "",
-    image: "",
-  });
-  const [updateCategory, setUpdateCategory] = useState({
+    id: "",
     categoryName: "",
     desc: "",
     image: "",
   });
 
-  const handleUpdate = (e) => {
-    setUpdateCategory((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  // show get model
+  const [showModal, setShowModal] = useState(false);
 
-  const handleClickUpdate = async (e) => {
-    
-  };
+  // show update model
+  const [showUpdateModel, setShowUpdateModel] = useState(false);
 
   const handleClick = async (e) => {
     e.preventDefault();
@@ -38,13 +31,13 @@ const Category = () => {
       formData.append("categoryName", category.categoryName);
       formData.append("desc", category.desc);
       formData.append("image", category.image);
+
       const res = await axios.post(
         "http://localhost:3001/categories",
-        category,
+        formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
       console.log(res);
-      fetchCategories();
     } catch (err) {
       console.log(err);
     }
@@ -54,24 +47,75 @@ const Category = () => {
     setCategory((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  console.log(category);
-
-  const onImageChange = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      setImage(URL.createObjectURL(event.target.files[0]));
-    }
-  };
-
   const fetchCategories = async () => {
     const res = await axios.get("http://localhost:3001/categories");
     // console.log(res);
-
     setCategories(res.data);
+  };
+
+  // update category function
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      let formData = new FormData();
+      formData.append("categoryName", category.categoryName);
+      formData.append("desc", category.desc);
+      formData.append("image", category.image);
+
+      const res = await axios.put(
+        `http://localhost:3001/categories/${category.id}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      //console.log(res)
+      if (res.status === 201) {
+        fetchCategories();
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [categories]);
+
+  // Delete
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You want to delete...!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        try {
+          axios.delete(`http://localhost:3001/categories/` + id);
+        } catch (err) {
+          console.log(err);
+        }
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 5000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal);
+            toast.addEventListener("mouseleave", Swal);
+          },
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Book has been deleted successfully.",
+        });
+        fetchCategories();
+      }
+    });
+  };
 
   return (
     <>
@@ -80,7 +124,7 @@ const Category = () => {
         <Sidebar />
         <div className="flex-1">
           <div className="grid grid-cols-4 gap-4">
-            <div className="col-span-4 bg-[#6B728E] h-20 flex justify-between items-center">
+            <div className="col-span-4 bg-[#92A9BD] h-20 flex justify-between items-center">
               <div className="flex items-center h-20 ml-4">
                 <input
                   type="search"
@@ -131,7 +175,7 @@ const Category = () => {
                   <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
                     <div className="overflow-hidden">
                       <table className="min-w-full border text-center">
-                        <thead className="border-b bg-[#6B728E]">
+                        <thead className="border-b">
                           <tr>
                             <th
                               scope="col"
@@ -174,7 +218,10 @@ const Category = () => {
                                 </td>
                                 <td className="text-sm text-gray-900 font-light px-8 py-1 whitespace-nowrap flex justify-center">
                                   <img
-                                    src={`http://localhost:3001/${cate.photo}`}
+                                    src={
+                                      cate.photo &&
+                                      `http://localhost:3001/${cate.photo}`
+                                    }
                                     alt=""
                                     className="h-12 w-12 object-cover mt-[2px]"
                                   />
@@ -183,14 +230,150 @@ const Category = () => {
                                   <div className="flex justify-center items-center">
                                     <div
                                       className="bg-blue-400 p-1 mr-2 rounded-md text-blue-100 cursor-pointer"
-                                      onClick={() => setShowModalUpdate(true)}
+                                      onClick={async () => {
+                                        console.log(cate.id)
+                                        const res = await axios.get(
+                                          `http://localhost:3001/categories/${cate.id}`
+                                        );
+                                        setCategory(res.data[0]);
+                                        setShowUpdateModel(true);
+                                      }}
                                     >
                                       <HiOutlinePencilAlt size={20} />
                                     </div>
                                     <AiFillDelete
                                       size={28}
                                       className="bg-red-400 p-[4px] text-[#ffffff] rounded-md cursor-pointer"
+                                      onClick={() => handleDelete(cate.id)}
                                     />
+                                    {/* get model */}
+                                    <ModelCreate
+                                      isVisible={showModal}
+                                      onClose={() => {
+                                        setShowModal(false);
+                                      }}
+                                    >
+                                    <form className="p-5">
+                                      <div className="mb-6">
+                                        <h1 className="text-center">
+                                          Add Category
+                                        </h1>
+                                      </div>
+                                      <div className="mb-6">
+                                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                          Category Name
+                                        </label>
+                                        <input
+                                          type="text"
+                                          className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                          placeholder="Category Name"
+                                          name="categoryName"
+                                          onChange={handleChange}
+                                        />
+                                      </div>
+                                      <div className="mb-6">
+                                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                          Description
+                                        </label>
+                                        <textarea
+                                          placeholder="Description"
+                                          onChange={handleChange}
+                                          name="desc"
+                                          className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                        />
+                                      </div>
+                                      <div className="mb-6">
+                                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                          Image
+                                        </label>
+                                        <input
+                                          onChange={(e) => {
+                                            setCategory((prev) => ({
+                                              ...prev,
+                                              [e.target.name]:
+                                                e.target.files[0],
+                                            }));
+                                          }}
+                                          type="file"
+                                          id=""
+                                          name="image"
+                                          accept="image/png, image/jpeg"
+                                          className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                        />
+                                      </div>
+                                      <button
+                                        onClick={handleClick}
+                                        type="submit"
+                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                      >
+                                        Submit
+                                      </button>
+                                    </form>
+                                    </ModelCreate>
+                                    <ModelUpdate
+                                      isVisible={showUpdateModel}
+                                      onClose={() => {
+                                        setShowUpdateModel(false);
+                                      }}
+                                    >
+                                      <form className="p-5">
+                                        <div className="mb-6">
+                                          <h1 className="text-center">
+                                            Update Category
+                                          </h1>
+                                        </div>
+                                        <div className="mb-6">
+                                          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Category Name
+                                          </label>
+                                          <input
+                                            type="text"
+                                            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                            placeholder="Category Name"
+                                            value={category.categoryName}
+                                            name="categoryName"
+                                            onChange={handleChange}
+                                          />
+                                        </div>
+                                        <div className="mb-6">
+                                          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Description
+                                          </label>
+                                          <textarea
+                                            onChange={handleChange}
+                                            value={category.desc}
+                                            name="desc"
+                                            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                          />
+                                        </div>
+                                        <div className="mb-6">
+                                          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Image
+                                          </label>
+                                          <input
+                                            onChange={(e) => {
+                                              setCategory((prev) => ({
+                                                ...prev,
+                                                [e.target.name]:
+                                                  e.target.files[0],
+                                              }));
+                                            }}
+                                            type="file"
+                                            id=""
+                                            name="image"
+                                            accept="image/png, image/jpeg"
+                                            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                          />
+                                        </div>
+                                        <button
+                                          onClick={handleUpdate}
+                                          type="submit"
+                                          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        >
+                                          Update
+                                        </button>
+                                      </form>
+                                    </ModelUpdate>
                                   </div>
                                 </td>
                               </tr>
@@ -204,215 +387,6 @@ const Category = () => {
               </div>
             </div>
           </div>
-
-          {showModal ? (
-            <>
-              <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                <div className="relative w-full my-6 mx-auto max-w-3xl">
-                  {/*content*/}
-                  <div className="border-0 shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                    {/*header*/}
-                    <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                      <h3 className="text-lg font-semibold uppercase">
-                        Add category
-                      </h3>
-                      <button
-                        className="p-1 ml-auto border-0 text-black -mt-3 float-right text-6xl leading-none font-semibold outline-none focus:outline-none"
-                        onClick={() => setShowModal(false)}
-                      >
-                        <span className="text-red-300 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                          ×
-                        </span>
-                      </button>
-                    </div>
-                    {/*body*/}
-                    <section className="my-6 mx-auto p-2 lg:p-10 bg-white rounded-lg shadow sm:p-10 h-auto w-full">
-                      <form encType="multipart/form-data">
-                        <div className="mb-2">
-                          <label
-                            htmlFor="title"
-                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-slate-400 mt-4"
-                          >
-                            Category Name
-                          </label>
-                          <input
-                            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-3 outline-none"
-                            type="text"
-                            name="categoryName"
-                            id="title"
-                            required
-                            onChange={handleChange}
-                          />
-                          <span className="text-red-400 font-sm"></span>
-                        </div>
-                        <div className="mb-2">
-                          <label
-                            htmlFor="date"
-                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-slate-400"
-                          >
-                            Description
-                          </label>
-                          <textarea
-                            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-3 outline-none"
-                            name="desc"
-                            id="desc"
-                            required
-                            onChange={handleChange}
-                          />
-                        </div>
-                        <div className="mb-2">
-                          <label
-                            htmlFor="author"
-                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-slate-400"
-                          >
-                            Image
-                          </label>
-                          <div className="flex">
-                            <input
-                              type="file"
-                              name="image"
-                              onChange={(e) => {
-                                onImageChange(e);
-                                setCategory((prev) => ({
-                                  ...prev,
-                                  [e.target.name]: e.target.files[0],
-                                }));
-                              }}
-                            />
-                            <img
-                              src={image}
-                              alt={image}
-                              name="image"
-                              className="w-26 h-24 object-cover"
-                            />
-                          </div>
-                        </div>
-                      </form>
-                    </section>
-                    {/*footer*/}
-                    <div
-                      className="flex items-center flex-col"
-                      onClick={handleClick}
-                    >
-                      <div className="flex bg-[#6B728E] w-full justify-center cursor-pointer">
-                        <button
-                          className="text-white pt-6 font-bold uppercase text-sm p-6 outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-                          type="button"
-                        >
-                          Submit
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="opacity-30 fixed inset-0 z-40 bg-black"></div>
-            </>
-          ) : null}
-          {showModalUpdate ? (
-            <>
-              <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                <div className="relative w-full my-6 mx-auto max-w-3xl">
-                  {/*content*/}
-                  <div className="border-0 shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                    {/*header*/}
-                    <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                      <h3 className="text-lg font-semibold uppercase">
-                        Update category
-                      </h3>
-                      <button
-                        className="p-1 ml-auto border-0 text-black -mt-3 float-right text-6xl leading-none font-semibold outline-none focus:outline-none"
-                        onClick={() => setShowModalUpdate(false)}
-                      >
-                        <span className="text-red-300 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                          ×
-                        </span>
-                      </button>
-                    </div>
-                    {/*body*/}
-                    <section className="my-6 mx-auto p-2 lg:p-10 bg-white rounded-lg shadow sm:p-10 h-auto w-full">
-                      <form encType="multipart/form-data">
-                        <div className="mb-2">
-                          <label
-                            htmlFor="title"
-                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-slate-400 mt-4"
-                          >
-                            Category Name
-                          </label>
-                          <input
-                            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-3 outline-none"
-                            type="text"
-                            name="categoryName"
-                            id="title"
-                            required
-                            onChange={handleUpdate}
-                          />
-                          <span className="text-red-400 font-sm"></span>
-                        </div>
-                        <div className="mb-2">
-                          <label
-                            htmlFor="date"
-                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-slate-400"
-                          >
-                            Description
-                          </label>
-                          <textarea
-                            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-3 outline-none"
-                            name="desc"
-                            id="desc"
-                            required
-                            onChange={handleUpdate}
-                          />
-                        </div>
-                        <div className="mb-2">
-                          <label
-                            htmlFor="author"
-                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-slate-400"
-                          >
-                            Image
-                          </label>
-                          <div className="flex">
-                            <input
-                              type="file"
-                              name="image"
-                              onChange={(e) => {
-                                onImageChange(e);
-                                setCategory((prev) => ({
-                                  ...prev,
-                                  [e.target.name]: e.target.files[0],
-                                }));
-                              }}
-                            />
-                            <img
-                              src={image}
-                              alt={image}
-                              name="image"
-                              className="w-26 h-24 object-cover"
-                            />
-                          </div>
-                        </div>
-                      </form>
-                    </section>
-                    {/*footer*/}
-                    <div
-                      className="flex items-center flex-col"
-                      onClick={handleClickUpdate}
-                    >
-                      <div className="flex bg-[#6B728E] w-full justify-center cursor-pointer">
-                        <button
-                          className="text-white pt-6 font-bold uppercase text-sm p-6 outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-                          type="button"
-                        >
-                          Submit
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="opacity-30 fixed inset-0 z-40 bg-black"></div>
-            </>
-          ) : null}
         </div>
       </div>
     </>

@@ -13,6 +13,7 @@ const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const [submenuOne, setSubmenuOne] = useState(false);
   const [submenuTwo, setSubmenuTwo] = useState(false);
+  const [submenuThree, setSubmenuThree] = useState(false);
 
   const subOneHandler = () => {
     setSubmenuOne(!submenuOne);
@@ -20,6 +21,10 @@ const Sidebar = () => {
 
   const subTwoHandler = () => {
     setSubmenuTwo(!submenuTwo);
+  };
+
+  const subThreeHandler = () => {
+    setSubmenuThree(!submenuThree);
   };
 
   return (
@@ -218,6 +223,61 @@ const Sidebar = () => {
       >
         <AiOutlineMenu size={24} color="white" />
       </div>
+      <li
+            onClick={subThreeHandler}
+            className="text-primary-text-dark text-[#fff] relative text-xl flex items-center gap-x-4 cursor-pointer pl-[12px] p-3 hover:bg-[#282A3A] focus:outline"
+          >
+            <span className="text-xl block float-left">
+              <RiCustomerServiceFill color="white" />
+            </span>
+            <span
+              className={`text-base font-medium select-none flex-1 ${
+                !open && "hidden"
+              } mt-[2px]`}
+            >
+              Staff
+            </span>
+            <span>
+              {open && (
+                <BsArrowRightShort
+                  color="white"
+                  className={`${submenuThree && "rotate-90"}`}
+                />
+              )}
+            </span>
+          </li>
+          {submenuThree && open && (
+            <div className="text-[#fff]">
+              <Link to="/addstaff">
+                <li className="text-primary-text-dark text-xl flex items-center gap-x-4 cursor-pointer pl-[18px] p-2 hover:bg-[#282A3A] focus:outline">
+                  <span className="text-xl block float-left">
+                    <RxDot color="white" />
+                  </span>
+                  <span
+                    className={`text-base font-medium select-none flex-1 ${
+                     !open && "hidden"
+                    } mt-[2px]`}
+                  >
+                    add-staff
+                  </span>
+                </li>
+              </Link>
+              <Link to="/liststaff">
+              <li className="text-primary-text-dark text-xl flex items-center gap-x-4 cursor-pointer pl-[18px] p-2 hover:bg-[#282A3A] focus:outline">
+                <span className="text-xl block float-left">
+                  <RxDot color="white" />
+                </span>
+                <span
+                  className={`text-base select-none font-medium flex-1 ${
+                    !open && "hidden"
+                  } mt-[2px]`}
+                >
+                  list-staff
+                </span>
+              </li>
+              </Link>
+            </div>
+          )}
     </div>
   );
 };

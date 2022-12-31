@@ -9,6 +9,7 @@ import AddCustomer from "./components/customer/AddCustomer";
 import AddSupplier from "./components/supplier/AddSupplier";
 import ListProducts from "./components/product/ListProducts";
 import ListCustomers from "./components/customer/ListCustomers";
+import AddStaff from "./components/staff/AddStaff";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route exact path="/addcustomer" element={<AddCustomer />} />
         <Route exact path="/listcustomers" element={<ListCustomers />} />
         <Route exact path="/addsupplier" element={<AddSupplier />} />
+        <Route exact path="/addstaff" element={<AddStaff />} />
       </Route>
     </Routes>
   );

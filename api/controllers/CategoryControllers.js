@@ -119,13 +119,22 @@ exports.updateCategory = async (req, res, next) => {
       if (path !== "" && image !== "") {
         deleteImg(path);
       }
-      res.status(200).send({ message: "Category updated." });
+      res.status(201).send({ message: "Category updated." });
     } else {
       if (image !== "") {
         deleteImg(image);
       }
-      res.status(201).send({ message: "Category update failed." });
+      res.status(200).send({ message: "Category update failed." });
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.findOneById = async (req, res, next) => {
+  try {
+    const [category, _] = await Category.findById(req.params.id);
+    res.status(200).send(category);
   } catch (error) {
     next(error);
   }
