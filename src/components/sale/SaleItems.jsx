@@ -10,10 +10,10 @@ const SaleItems = (props) => {
       <img
         src={product.image}
         alt="img"
-        className="bg-[#92A9BD] rounded-sm object-cover h-[180px] w-[300px] hover:scale-105 duration-300"
+        className="bg-[#555] rounded-sm object-cover h-[180px] w-[300px] hover:scale-105 duration-300"
       />
-      <div className="bg-[#92A9BD] p-1 mt-[2px] rounded-sm flex justify-center overflow-hidden z-20">
-        <span className="font-semibold text-[#000000]">{product.name}</span>
+      <div className="bg-[#555] p-1 mt-[2px] rounded-sm flex justify-center overflow-hidden z-20">
+        <span className="font-semibold text-[#fff]">{product.name}</span>
       </div>
     </div>
   );

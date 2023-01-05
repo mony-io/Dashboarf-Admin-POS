@@ -10,6 +10,7 @@ import AddSupplier from "./components/supplier/AddSupplier";
 import ListProducts from "./components/product/ListProducts";
 import ListCustomers from "./components/customer/ListCustomers";
 import AddStaff from "./components/staff/AddStaff";
+import User from "./components/user/User";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route exact path="/listcustomers" element={<ListCustomers />} />
         <Route exact path="/addsupplier" element={<AddSupplier />} />
         <Route exact path="/addstaff" element={<AddStaff />} />
+        <Route exact path="/user" element={<User />} />
       </Route>
     </Routes>
   );

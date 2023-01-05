@@ -2,11 +2,7 @@ import React, { useState } from "react";
 import Navbar from "../navbar/Navbar";
 import Sidebar from "../sidebar/Sidebar";
 
-import { AiOutlineSearch } from "react-icons//ai";
-import {
-  AiFillDelete,
-  AiFillPlusCircle,
-} from "react-icons/ai";
+import { AiFillDelete, AiOutlineSearch } from "react-icons/ai";
 
 import Cart from "./Cart";
 import data from "../../data";
@@ -48,24 +44,26 @@ const Sale = () => {
         <Sidebar />
         <div className="flex-1">
           <div className="grid grid-cols-5 gap-4 ml-4 mr-4 h-screen">
-            <div className="col-span-2 bg-slate-300 mr-6">
+            <div className="col-span-2 mr-6">
               <div className="grid grid-cols-4 gap-4">
-                <div className="col-span-4 h-18">
-                  <div className="flex justify-between items-center border pt-1 pb-1 h-16">
-                    <span className="ml-3 text-sm text-slate-400">
-                      សួរស្ដី
-                    </span>
-                    <div className="flex  text-slate-400">
-                      <AiFillPlusCircle className="border mr-1" size={24} />
-                    </div>
+                <div className="col-span-4 h-12">
+                  <div className="flex mt-4">
+                    <select
+                      name=""
+                      id=""
+                      className="w-full h-9 outline-none border"
+                    >
+                      <option value="all">លក់ដុំ</option>
+                      <option value="all">លក់រាយ</option>
+                    </select>
                   </div>
                 </div>
                 <div className="col-span-4">
                   <div className="grid grid-cols-4 gap-4">
-                    <div className="col-span-4 flex justify-between bg-[#6B728E] p-2 items-center text-slate-300">
-                      <span className="ml-6">Product</span>
-                      <span>Qty</span>
-                      <span>Price</span>
+                    <div className="col-span-4 flex justify-between bg-[#333] p-2 items-center text-slate-300">
+                      <span className="ml-6">ផលិតផល</span>
+                      <span>ចំនួន</span>
+                      <span>តម្លៃ</span>
                       <span className="text-slate-300 mr-8">
                         <AiFillDelete size={22} />
                       </span>
@@ -79,19 +77,28 @@ const Sale = () => {
                 </div>
               </div>
             </div>
-            <div className="col-span-3 bg-slate-300 -ml-6 overflow-auto scrollbar">
-              <div className="bg-[#6B728E] h-16 flex justify-between items-center">
-                <div className="text-slate-200 ml-6 flex flex-row items-center border-gray-200 border p-[2px] cursor-pointer">
-                  <span className="mr-2">Search</span>
-                  <AiOutlineSearch size={18} />
+            <div className="col-span-3 -ml-6 mt-1 overflow-auto scrollbar h-[700px]">
+              <div className="h-9 mt-3 px-1 flex justify-between items-center bg-white mx-3">
+                <div className="flex items-center rounded-sm overflow-hidden">
+                  <input
+                    type="search"
+                    placeholder="search"
+                    className="p-1 outline-none w-32 bg-[#ddd]"
+                  />
+                  <div className="bg-[#333] text-[#fff] p-[6px]">
+                    <AiOutlineSearch size={20} />
+                  </div>
                 </div>
-                <div>
-                  <select className="bg-slate-400 outline-none border-gray-200 text-slate-200 text-sm border block w-24 mr-6 h-7">
-                    <option>Category</option>
-                    <option value="US">All</option>
-                    <option value="CA">Stell</option>
-                    <option value="FR">Concrete</option>
-                    <option value="DE">Brick</option>
+                <div className="flex">
+                  <select
+                    id="default"
+                    class="bg-gray-50 border rounded-sm w-32 border-gray-300 text-gray-900 text-sm px-2 py-[2px] block dark:bg-[#333] dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  >
+                    <option selected>អំពូល</option>
+                    <option value="US">ការោ</option>
+                    <option value="CA">ដែក</option>
+                    <option value="FR">សុីម៉ង់</option>
+                    <option value="DE">ថ្នាំលាប់</option>
                   </select>
                 </div>
               </div>

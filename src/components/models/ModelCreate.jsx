@@ -5,7 +5,7 @@ const ModelCreate = ({ isVisible, onClose, children }) => {
 
   const handleClose = (e) => {
     if (e.target.id === "wrapper") onClose();
-  };
+  };  
 
   return (
     <>

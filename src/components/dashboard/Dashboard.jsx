@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 const dashboard = () => {
   return (
     <div className="h-screen flex-1">
-      <div className="grid grid-cols-4 gap-4 bg-slate-300 w-full">
+      <div className="grid grid-cols-4 gap-4 w-full">
         <div className="col-span-1 h-32 m-2">
           <div className="flex justify-between items-center h-24 bg-[#fff] mt-4 rounded-sm overflow-hidden shadow-sm">
             <div className="flex flex-col h-24 justify-between ml-3">

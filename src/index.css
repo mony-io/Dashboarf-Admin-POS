@@ -1,5 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Freehand&family=Kantumruy:wght@300;400;700&family=Noto+Sans+Khmer:wght@200;300;400;700&display=swap');
 
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary) var(--primary);
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 1px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #333;
+  border-radius: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 14px;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,7 +30,7 @@ body {
   padding: 0;
   font-family: 'Kantumruy', sans-serif;
   margin-top: -25px;
-  background-color: #EAF6F6;
+  background-color: #ddd;
 }
 
 @layer utilities {
